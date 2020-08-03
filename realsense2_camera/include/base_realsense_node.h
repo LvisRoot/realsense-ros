@@ -190,6 +190,7 @@ namespace realsense2_camera
         void getParameters();
         void setupDevice();
         void setupErrorCallback();
+        void setupRawRecorder();
         void setupPublishers();
         void enable_devices();
         void setupFilters();
@@ -240,10 +241,12 @@ namespace realsense2_camera
         void publish_temperature();
 
         rs2::device _dev;
+        std::shared_ptr<rs2::recorder> _raw_recorder;
         std::map<stream_index_pair, rs2::sensor> _sensors;
         std::map<std::string, std::function<void(rs2::frame)>> _sensors_callback;
         std::vector<std::shared_ptr<ddynamic_reconfigure::DDynamicReconfigure>> _ddynrec;
 
+        std::string _raw_record_path;
         std::string _json_file_path;
         std::string _serial_no;
         float _depth_scale_meters;
