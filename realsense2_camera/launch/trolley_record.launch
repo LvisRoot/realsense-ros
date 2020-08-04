@@ -1,0 +1,173 @@
+<launch>
+  <arg name="serial_no_camera1"    			default="947522072061"/> 			<!-- Note: Replace with actual serial number -->
+  <arg name="serial_no_camera2"    			default=""/> 			<!-- Note: Replace with actual serial number -->
+  <arg name="serial_no_camera3"    			default=""/> 			<!-- Note: Replace with actual serial number -->
+  <arg name="camera1"              			default="camera1"/>		<!-- Note: Replace with camera name -->
+  <arg name="camera2"              			default="camera2"/>		<!-- Note: Replace with camera name -->
+  <arg name="camera3"              			default="camera3"/>		<!-- Note: Replace with camera name -->
+  <arg name="tf_prefix_camera1"         default="$(arg camera1)"/>
+  <arg name="tf_prefix_camera2"         default="$(arg camera2)"/>
+  <arg name="tf_prefix_camera3"         default="$(arg camera3)"/>
+  <arg name="initial_reset"             default="true"/>
+
+  <arg name="clock_sync_cam"             default="$(arg camera1)"/>
+
+
+  <arg name="res_width"                 default="1280"/>
+  <arg name="res_height"                default="720"/>
+
+  <arg name="fps"                       default="15"/>
+  <!-- <arg name="fps"                       default="30"/> -->
+
+  <arg name="sync_controller"           default="1"/>
+  <arg name="sync_device"               default="2"/>
+  <arg name="enable_depth"        default="true"/>
+  <arg name="enable_infra1"       default="true"/>
+  <arg name="enable_color"        default="true"/>
+
+  <arg name="enable_gyro"         default="true"/>
+  <arg name="enable_accel"        default="true"/>
+
+  <!-- try if framerate remains stable despite syncing aligning -->
+  <arg name="enable_sync"         default="false"/>
+  <arg name="align_depth"         default="false"/>
+
+  <arg name="log_path"                  default=""/>
+
+  <arg name="laser_power"              default="0.0"/>
+
+
+  <group ns="$(arg camera1)" if="$(eval serial_no_camera1 != '')">
+    <include file="$(find realsense2_camera)/launch/includes/nodelet.launch.xml">
+      <arg name="serial_no"             value="$(arg serial_no_camera1)"/>
+      <arg name="tf_prefix"         		value="$(arg tf_prefix_camera1)"/>
+      <arg name="initial_reset"         value="$(arg initial_reset)"/>
+      <arg name="raw_record_path"       value="$(arg log_path)"/>
+
+      <arg name="depth_width"         default="$(arg res_width)"/>
+      <arg name="depth_height"        default="$(arg res_height)"/>
+      <arg name="enable_depth"        default="$(arg enable_depth)"/>
+
+      <arg name="infra_width"         default="$(arg res_width)"/>
+      <arg name="infra_height"        default="$(arg res_height)"/>
+      <arg name="enable_infra1"        default="$(arg enable_infra1)"/>
+
+      <arg name="color_width"         default="$(arg res_width)"/>
+      <arg name="color_height"        default="$(arg res_height)"/>
+      <arg name="enable_color"        default="$(arg enable_color)"/>
+
+
+      <arg name="depth_fps"           default="$(arg fps)"/>
+      <arg name="infra_fps"           default="$(arg fps)"/>
+      <arg name="color_fps"           default="$(arg fps)"/>
+
+      <arg name="enable_gyro"         default="$(arg enable_gyro)"/>
+      <arg name="enable_accel"        default="$(arg enable_accel)"/>
+
+
+      <arg name="laser_power"         default="$(arg laser_power)"/>
+
+    </include>
+
+    <!-- dynamic reconfigurable paramaeters -->
+    <param name="stereo_module/laser_power" type="double" value="$(arg laser_power)"/>
+    <group if="$(eval clock_sync_cam == arg('camera1'))">
+      <param name="stereo_module/inter_cam_sync_mode" type="int" value="$(arg sync_device)"/>
+      <param name="stereo_module/output_trigger_enable" type="bool" value="true"/>
+    </group>
+    <group if="$(eval clock_sync_cam != arg('camera1'))">
+      <param name="stereo_module/inter_cam_sync_mode" type="int" value="$(arg sync_controller)"/>
+      <param name="stereo_module/output_trigger_enable" type="bool" value="false"/>
+    </group>
+    <param name="rgb_camera/auto_exposure_priority" type="bool" value="false"/>
+
+  </group>
+
+  <group ns="$(arg camera2)" if="$(eval serial_no_camera2 != '')">
+    <include file="$(find realsense2_camera)/launch/includes/nodelet.launch.xml">
+      <arg name="serial_no"             value="$(arg serial_no_camera2)"/>
+      <arg name="tf_prefix"		          value="$(arg tf_prefix_camera2)"/>
+      <arg name="initial_reset"         value="$(arg initial_reset)"/>
+      <arg name="raw_record_path"       value="$(arg log_path)"/>
+
+      <arg name="depth_width"         default="$(arg res_width)"/>
+      <arg name="depth_height"        default="$(arg res_height)"/>
+      <arg name="enable_depth"        default="$(arg enable_depth)"/>
+
+      <arg name="infra_width"         default="$(arg res_width)"/>
+      <arg name="infra_height"        default="$(arg res_height)"/>
+      <arg name="enable_infra1"        default="$(arg enable_infra1)"/>
+
+      <arg name="color_width"         default="$(arg res_width)"/>
+      <arg name="color_height"        default="$(arg res_height)"/>
+      <arg name="enable_color"        default="$(arg enable_color)"/>
+
+
+      <arg name="depth_fps"           default="$(arg fps)"/>
+      <arg name="infra_fps"           default="$(arg fps)"/>
+      <arg name="color_fps"           default="$(arg fps)"/>
+
+      <arg name="enable_gyro"         default="$(arg enable_gyro)"/>
+      <arg name="enable_accel"        default="$(arg enable_accel)"/>
+    </include>
+
+    <!-- dynamic reconfigurable paramaeters -->
+    <param name="stereo_module/laser_power" type="double" value="$(arg laser_power)"/>
+    <group if="$(eval clock_sync_cam == arg('camera1'))">
+      <param name="stereo_module/inter_cam_sync_mode" type="int" value="$(arg sync_device)"/>
+      <param name="stereo_module/output_trigger_enable" type="bool" value="true"/>
+    </group>
+    <group if="$(eval clock_sync_cam != arg('camera1'))">
+      <param name="stereo_module/inter_cam_sync_mode" type="int" value="$(arg sync_controller)"/>
+      <param name="stereo_module/output_trigger_enable" type="bool" value="false"/>
+    </group>
+    <param name="rgb_camera/auto_exposure_priority" type="bool" value="false"/>
+
+  </group>
+
+  <group ns="$(arg camera3)" if="$(eval serial_no_camera3 != '')">
+    <include file="$(find realsense2_camera)/launch/includes/nodelet.launch.xml">
+      <arg name="serial_no"             value="$(arg serial_no_camera3)"/>
+      <arg name="tf_prefix"		          value="$(arg tf_prefix_camera3)"/>
+      <arg name="initial_reset"         value="$(arg initial_reset)"/>
+      <arg name="raw_record_path"       value="$(arg log_path)"/>
+
+      <arg name="depth_width"         default="$(arg res_width)"/>
+      <arg name="depth_height"        default="$(arg res_height)"/>
+      <arg name="enable_depth"        default="$(arg enable_depth)"/>
+
+      <arg name="infra_width"         default="$(arg res_width)"/>
+      <arg name="infra_height"        default="$(arg res_height)"/>
+      <arg name="enable_infra1"        default="$(arg enable_infra1)"/>
+
+      <arg name="color_width"         default="$(arg res_width)"/>
+      <arg name="color_height"        default="$(arg res_height)"/>
+      <arg name="enable_color"        default="$(arg enable_color)"/>
+
+
+      <arg name="depth_fps"           default="$(arg fps)"/>
+      <arg name="infra_fps"           default="$(arg fps)"/>
+      <arg name="color_fps"           default="$(arg fps)"/>
+
+      <arg name="enable_gyro"         default="$(arg enable_gyro)"/>
+      <arg name="enable_accel"        default="$(arg enable_accel)"/>
+    </include>
+
+    <!-- dynamic reconfigurable paramaeters -->
+    <param name="stereo_module/laser_power" type="double" value="$(arg laser_power)"/>
+    <group if="$(eval clock_sync_cam == arg('camera1'))">
+      <param name="stereo_module/inter_cam_sync_mode" type="int" value="$(arg sync_device)"/>
+      <param name="stereo_module/output_trigger_enable" type="bool" value="true"/>
+    </group>
+    <group if="$(eval clock_sync_cam != arg('camera1'))">
+      <param name="stereo_module/inter_cam_sync_mode" type="int" value="$(arg sync_controller)"/>
+      <param name="stereo_module/output_trigger_enable" type="bool" value="false"/>
+    </group>
+    <param name="rgb_camera/auto_exposure_priority" type="bool" value="false"/>
+
+  </group>
+
+  <node pkg="rosbag" type="record" name="rosbag_record_odometry"
+       args="record /tf /tf_static -o $(arg log_path)/odometry"/>
+
+</launch>
