@@ -6,7 +6,6 @@
   <arg name="device_type"         default=""/>
   <arg name="tf_prefix"           default=""/>
   <arg name="json_file_path"      default=""/>
-  <arg name="raw_record_path"     default=""/>
   <arg name="rosbag_filename"     default=""/>
   <arg name="required"            default="false"/>
 
@@ -99,7 +98,6 @@
     <param name="usb_port_id"              type="str"  value="$(arg usb_port_id)"/>
     <param name="device_type"              type="str"  value="$(arg device_type)"/>
     <param name="json_file_path"           type="str"  value="$(arg json_file_path)"/>
-    <param name="raw_record_path"          type="str"  value="$(arg raw_record_path)"/>
     <param name="rosbag_filename"          type="str"  value="$(arg rosbag_filename)"/>
 
     <param name="enable_pointcloud"        type="bool" value="$(arg enable_pointcloud)"/>
