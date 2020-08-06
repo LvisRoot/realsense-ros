@@ -787,7 +787,9 @@ void BaseRealSenseNode::setupRawRecorder(){
     for (int i = 0; i < 10; ++i)
     {
         try{
-            _raw_recorder = std::make_shared<rs2::recorder>(_raw_record_path+"/"+devID+".bag", _dev);
+            _raw_recorder = std::make_shared<rs2::recorder>(_raw_record_path+"/"
+                                                            +getNamespaceStr()+"_"+devID+".bag"
+                                                            , _dev);
         }
         catch (const std::exception& e){
             std::cout << '\r';
